@@ -1,6 +1,7 @@
 package decisiontree;
 
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import Main.Matrix;
@@ -14,8 +15,8 @@ public class ID3 {
 	}
 	
 	// this set does not include the target attribute
-	private HashSet<Attribute> getAllAttributes(Matrix examples) {
-		HashSet<Attribute> attributes = new HashSet<Attribute>();
+	private LinkedHashSet<Attribute> getAllAttributes(Matrix examples) {
+		LinkedHashSet<Attribute> attributes = new LinkedHashSet<Attribute>();
 		for (int i = 0; i < examples.cols(); i++) {
 			Attribute attribute = new Attribute(examples.attrName(i), getValuesOfAttribute(examples, i));
 			attributes.add(attribute);
@@ -23,7 +24,7 @@ public class ID3 {
 		return attributes;
 	}
 	
-	public Node runID3(Matrix examples, Matrix targetAttributes, HashSet<Attribute> attributes) {
+	public Node runID3(Matrix examples, Matrix targetAttributes, LinkedHashSet<Attribute> attributes) {
 		Node root = new Root();
 		if (allExamplesPositive(targetAttributes) || attributes.size() == 0) {
 			System.out.println("No variance in examples...returning Root with label = most common classification");
@@ -34,6 +35,7 @@ public class ID3 {
 		for (Attribute attr : attributes)
 			System.out.println("Size of attribute: " + attr.getNumberOfValues());
 		
+//		for (String value : )
 		return null;
 	}
 	
@@ -42,12 +44,18 @@ public class ID3 {
 	}
 	
 	private Attribute findBestAttribute(Matrix examples, Matrix targetAttributes) {
+		int c_wise_classification = targetAttributes.valueCount(0);
+		
 		return null;
 	}
 	
+	private double getEntropy(Matrix data) {
+		
+	}
+	
 	// attributes can either be target attributes or examples
-	private HashSet<String> getValuesOfAttribute(Matrix attributes, int attribute) {
-		HashSet<String> values = new HashSet<String>();
+	private LinkedHashSet<String> getValuesOfAttribute(Matrix attributes, int attribute) {
+		LinkedHashSet<String> values = new LinkedHashSet<String>();
 		int numberofValues = attributes.valueCount(attribute);
 		for (int i = 0; i < attributes.rows(); i++) {
 			double whichValue = attributes.get(i, attribute);
