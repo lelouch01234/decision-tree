@@ -14,5 +14,8 @@ public abstract class Node {
 	public void setLabel(Label label) {
 		_label = label;
 	}
-	
+
+	public abstract void setAttribute(Attribute bestAttribute);
+
+	public abstract void addBranch(int value, Node leaf);
 }

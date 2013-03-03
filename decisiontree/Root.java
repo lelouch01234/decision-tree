@@ -1,22 +1,24 @@
 package decisiontree;
 
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class Root extends Node {
 	
-	private Set<Branch<String, Node>> _branches;
+	private LinkedHashSet<Branch<Integer, Node>> _branches;
 	private Attribute _attribute;
 	
 	public Root() {
-		_branches = new HashSet<Branch<String, Node>>();
+		_branches = new LinkedHashSet<Branch<Integer, Node>>();
 	}
 	
-	public void setAttribute(Attribute attribute) {
-		_attribute = attribute;
+	public void setAttribute(Attribute bestAttribute) {
+		_attribute = bestAttribute;
 	}
 	
-	public void addBranch(String value, Node node) {
+	@Override
+	public void addBranch(int value, Node node) {
 		Branch branch = new Branch(value, node);
 		_branches.add(branch);
 	}

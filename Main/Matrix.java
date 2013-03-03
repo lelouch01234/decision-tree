@@ -255,18 +255,6 @@ public class Matrix {
 		}
 		return m;
 	}
-	
-	public int[] getAttributeOccurrences(int col, int cwise) {		
-		int[] classCount = new int[cwise];
-		for (int i = 0; i < cwise; i++) {
-			classCount[i] = 0;
-			for (int j = 0; j < rows(); j++) {
-				if ((double) i == get(j, col))
-					classCount[i]++;
-			}
-		}
-		return classCount;
-	}
 
 	// Returns the max value in the specified column
 	public double columnMax(int col) {
