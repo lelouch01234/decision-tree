@@ -10,6 +10,11 @@ public class Label {
 		_value = value;
 	}
 	
+	public Label() {	// start as not a leaf node and modify after...
+		_strvalue = "Not a leaf node";
+		_value = -1;
+	}
+	
 	public String getStrValue() {
 		return _strvalue;
 	}

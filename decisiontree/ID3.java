@@ -10,8 +10,11 @@ import Main.Matrix;
 public class ID3 {
 	
 	private TableManager _tableManager;
+	private int _nodeCounter;
 	
-	public ID3 () { }
+	public ID3 () {
+		_nodeCounter = 0;
+	}
 	
 	public Node buildTree (Matrix examples, Matrix targetAttributes) {
 		LinkedHashSet<Attribute> attributes = createAllAttributes(examples);
@@ -31,11 +34,11 @@ public class ID3 {
 	}
 	
 	// attributes can either be target attributes or examples
-	private LinkedHashSet<Integer> getValuesOfAttributeFromCurrentTable (Matrix attributes, int attribute) {
-		LinkedHashSet<Integer> values = new LinkedHashSet<Integer>();
+	private LinkedHashSet<Double> getValuesOfAttributeFromCurrentTable (Matrix attributes, int attribute) {
+		LinkedHashSet<Double> values = new LinkedHashSet<Double>();
 		int numberofValues = attributes.valueCount(attribute);
 		for (int i = 0; i < attributes.rows(); i++) {
-			values.add((int)attributes.get(i, attribute));
+			values.add(attributes.get(i, attribute));
 			if (values.size() == numberofValues)
 				break;
 		}
@@ -43,37 +46,32 @@ public class ID3 {
 	}
 	
 	public Node runID3 (Matrix examples, Matrix targetAttributes, LinkedHashSet<Attribute> attributes) {
-		Node root = new Root();
+		Node root = new Node(_nodeCounter);
+		_nodeCounter++;
 		if (allExamplesPositive(targetAttributes) || attributes.isEmpty()) {
-			//System.out.println("All examples are of same classification type...returning Root with label = most common classification");
 			Label label = new Label(targetAttributes.attrValue(0, 0), (int)targetAttributes.get(0, 0));
-			targetAttributes.print();
 			root.setLabel(label);
-			return root;
 		}
-
-		Attribute A = findBestAttribute();
-		root.setAttribute(A);
-		
-		
-		for (int value : A.get_values()) {
-			Matrix[] examples_vi = _tableManager.getTrimmedMatrices(A.get_columnPosition(), value);
-			if (examples_vi[0].rows() == 0) {
-				Node leaf = new Leaf();
-				double mcv = targetAttributes.mostCommonValue(0);
-				Label label = new Label(targetAttributes.attrValue(0, (int)mcv), (int)mcv);
-				leaf.setLabel(label);
-				root.addBranch(value, leaf);
-				System.out.println("Added branch with leaf..." + leaf.getLabel().getValue());
-			}
-			else {
-				if (attributes.remove(A) == true)
-					System.out.println("Removed an attribute: " + A.get_columnPosition());
-				_tableManager.set_attributes(attributes);
-				_tableManager.set_examples(examples_vi[0]);
-				_tableManager.set_targetAttributes(examples_vi[1]);
-				System.out.println("Entering...");
-				root.addBranch(value, runID3(examples_vi[0], examples_vi[1], attributes));
+		else {
+			Attribute A = findBestAttribute();
+			root.setAttribute(A);
+			for (double value : A.getValues()) {
+				Matrix[] examples_vi = _tableManager.getTrimmedMatrices(A.getColumnPositionID(), (int)value);
+				if (examples_vi[0].rows() == 0) {
+					Node leafNode = new Node(_nodeCounter);
+					_nodeCounter++;
+					double mcv = targetAttributes.mostCommonValue(0);
+					Label label = new Label(targetAttributes.attrValue(0, (int)mcv), (int)mcv);
+					leafNode.setLabel(label);
+					root.addBranch(value, leafNode);
+				}
+				else {
+					attributes.remove(A);
+					_tableManager.set_attributes(attributes);
+					_tableManager.set_examples(examples_vi[0]);
+					_tableManager.set_targetAttributes(examples_vi[1]);
+					root.addBranch(value, runID3(examples_vi[0], examples_vi[1], attributes));
+				}
 			}
 		}
 		return root;
@@ -95,9 +93,9 @@ public class ID3 {
 			}
 		}
 		for (Attribute attribute : _tableManager.get_attributes()) {
-			System.out.println(attribute.get_columnPosition() + "==" + bestAttribute);
+//			System.out.println(attribute.get_columnPosition() + "==" + bestAttribute);
 			
-			if (attribute.get_columnPosition() == bestAttribute)
+			if (attribute.getColumnPositionID() == bestAttribute)
 				return attribute;
 		}
 		return null;

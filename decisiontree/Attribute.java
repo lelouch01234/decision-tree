@@ -1,42 +1,42 @@
 package decisiontree;
 
-import java.util.HashSet;
 import java.util.LinkedHashSet;
-import java.util.Set;
 
 public class Attribute {
 	
 	private String _name;
-	private LinkedHashSet<Integer> _values;
+	private LinkedHashSet<Double> _values;
 	private int _columnPosition;
 	
-	public Attribute(String name, LinkedHashSet<Integer> values, int columnPosition) {
+	public Attribute(String name, LinkedHashSet<Double> values, int columnPosition) {
 		_name = name;
 		_values = values;
 		_columnPosition = columnPosition;
 	}
 	
-	public String get_name() {
-		return _name;
+	public Attribute() {
+		_name = "Leaf Node";
+		_values = new LinkedHashSet<Double>();
+		_columnPosition = -2;
 	}
 
-	public void set_name(String _name) {
+	public void setName(String _name) {
 		this._name = _name;
 	}
 
-	public LinkedHashSet<Integer> get_values() {
+	public LinkedHashSet<Double> getValues() {
 		return _values;
 	}
 
-	public void set_values(LinkedHashSet<Integer> values) {
+	public void setValues(LinkedHashSet<Double> values) {
 		this._values = values;
 	}
 
-	public int get_columnPosition() {
+	public int getColumnPositionID() {
 		return _columnPosition;
 	}
 
-	public void set_columnPosition(int _columnPosition) {
+	public void setColumnPosition(int _columnPosition) {
 		this._columnPosition = _columnPosition;
 	}
 
