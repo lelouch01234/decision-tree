@@ -55,9 +55,10 @@ public class ID3 {
 		else {
 			Attribute A = findBestAttribute();
 			root.setAttribute(A);
+			System.out.println("Attribute= " + A.getName());
 			for (double value : A.getValues()) {
 				Matrix[] examples_vi = _tableManager.getTrimmedMatrices(A.getColumnPositionID(), (int)value);
-				if (examples_vi[0].rows() == 0) {
+				if (examples_vi[0].rows() < 1) {
 					Node leafNode = new Node(_nodeCounter);
 					_nodeCounter++;
 					double mcv = targetAttributes.mostCommonValue(0);
@@ -70,6 +71,7 @@ public class ID3 {
 					_tableManager.set_attributes(attributes);
 					_tableManager.set_examples(examples_vi[0]);
 					_tableManager.set_targetAttributes(examples_vi[1]);
+//					examples_vi[0].print();
 					root.addBranch(value, runID3(examples_vi[0], examples_vi[1], attributes));
 				}
 			}
@@ -83,13 +85,16 @@ public class ID3 {
 	
 	// algorithm for finding best attribute is based on Gain (S, A)
 	private Attribute findBestAttribute () {
-		double bestGain = 0;
-		int bestAttribute = -1;
-		for (int i = 0; i < _tableManager.get_examples().cols(); i++) {
-			double gain = calculateGain(i);
+		double bestGain = -10;
+		int bestAttribute = -10;
+		System.out.println(_tableManager.get_attributes().toString());
+		for (Attribute attribute : _tableManager.get_attributes()) {
+			int attributeColPos = attribute.getColumnPositionID();
+			double gain = calculateGain(attributeColPos);
+			System.out.println("Testing Node" + attributeColPos);
 			if (bestGain <= gain) {
 				bestGain = gain;
-				bestAttribute = i;
+				bestAttribute = attributeColPos;
 			}
 		}
 		for (Attribute attribute : _tableManager.get_attributes()) {

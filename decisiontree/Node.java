@@ -68,7 +68,7 @@ public class Node {
 			for (double key : _branches.keySet()) {
 				Node childNode = _branches.get(key);
 				String edgeLabel = "";
-				edgeLabel = _branches.get(key).getAttribute().getColumnPositionID() + "";
+				edgeLabel = childNode.getBranches().get(key).getAttribute().getName();
 				int childNodeID = childNode.getNodeID();
 				out.print("  " + _nodeID + " -> " + childNodeID);
 				out.print(" [label=\" " +edgeLabel + "\"];\n");

@@ -47,4 +47,10 @@ public class Attribute {
 	public int getNumberOfValues() {
 		return _values.size();
 	}
+	
+	public boolean equals(Attribute other) {
+		if (this.getName().equals(other.getName()))
+			return true;
+		return false;
+	}
 }
