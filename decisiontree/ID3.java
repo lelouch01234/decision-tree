@@ -45,8 +45,9 @@ public class ID3 {
 	public Node runID3 (Matrix examples, Matrix targetAttributes, LinkedHashSet<Attribute> attributes) {
 		Node root = new Root();
 		if (allExamplesPositive(targetAttributes) || attributes.isEmpty()) {
-			System.out.println("All examples are of same classification type...returning Root with label = most common classification");
-			Label label = new Label(targetAttributes.attrValue(0, 0), (int)targetAttributes.mostCommonValue(0));
+			//System.out.println("All examples are of same classification type...returning Root with label = most common classification");
+			Label label = new Label(targetAttributes.attrValue(0, 0), (int)targetAttributes.get(0, 0));
+			targetAttributes.print();
 			root.setLabel(label);
 			return root;
 		}
@@ -63,6 +64,7 @@ public class ID3 {
 				Label label = new Label(targetAttributes.attrValue(0, (int)mcv), (int)mcv);
 				leaf.setLabel(label);
 				root.addBranch(value, leaf);
+				System.out.println("Added branch with leaf..." + leaf.getLabel().getValue());
 			}
 			else {
 				if (attributes.remove(A) == true)

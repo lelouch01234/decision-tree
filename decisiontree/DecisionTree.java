@@ -16,9 +16,9 @@ public class DecisionTree extends SupervisedLearner {
 	@Override
 	public void predict(double[] features, double[] labels) throws Exception {
 		System.out.println("Predicting...");
-		for (int i = 0; i < features.length; i++) {
-			System.out.println("	Feature" + i + ": " + features[i]);
-		}
+//		for (int i = 0; i < features.length; i++) {
+//			System.out.println("	Feature" + i + ": " + features[i]);
+//		}
 	}
 
 }
