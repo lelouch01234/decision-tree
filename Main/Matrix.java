@@ -22,11 +22,14 @@ public class Matrix {
 	ArrayList< String > m_attr_name;
 	ArrayList< TreeMap<String, Integer> > m_str_to_enum;
 	ArrayList< TreeMap<Integer, String> > m_enum_to_str;
+	
+	private ArrayList<Integer> whichRowsToCopy;
 
 	static double MISSING = Double.MAX_VALUE; // representation of missing values in the dataset
 
 	// Creates a 0x0 matrix. You should call loadARFF or setSize next.
-	public Matrix() {}
+	public Matrix() {
+	}
 
 	// Copies the specified portion of that matrix into this matrix
 	public Matrix(Matrix that, int rowStart, int colStart, int rowCount, int colCount) {
@@ -46,6 +49,45 @@ public class Matrix {
 			m_str_to_enum.add(that.m_str_to_enum.get(colStart + i));
 			m_enum_to_str.add(that.m_enum_to_str.get(colStart + i));
 		}
+	}
+	
+	// Custom constructor
+	public Matrix (Matrix that, int attribute, int value, int r, int c, ArrayList<Integer> whichToCopy) {
+		whichRowsToCopy = new ArrayList<Integer>();
+		m_data = new ArrayList< double[] >();
+		if (value == -1) {
+			for (int i = 0; i < whichToCopy.size(); i++) {
+				double[] rowSrc = that.row(i);
+				double[] rowDest = new double[c];
+				for(int j = 0; j < c; j++)
+					rowDest[j] = rowSrc[j];
+				m_data.add(rowDest);
+			}
+		}
+		else {
+			for(int j = 0; j < that.rows(); j++) {
+				if (that.get(j, attribute) == value) {
+					double[] rowSrc = that.row(j);
+					double[] rowDest = new double[c];
+					for(int i = 0; i < c; i++)
+						rowDest[i] = rowSrc[i];
+					m_data.add(rowDest);
+					whichRowsToCopy.add(j);
+				}
+			}
+		}
+		m_attr_name = new ArrayList<String>();
+		m_str_to_enum = new ArrayList< TreeMap<String, Integer> >();
+		m_enum_to_str = new ArrayList< TreeMap<Integer, String> >();
+		for(int i = 0; i < c; i++) {
+			m_attr_name.add(that.attrName(i));
+			m_str_to_enum.add(that.m_str_to_enum.get(i));
+			m_enum_to_str.add(that.m_enum_to_str.get(i));
+		}
+	}
+	
+	public ArrayList<Integer> getWhichRowsToCopy () {
+		return whichRowsToCopy;
 	}
 
 	// Adds a copy of the specified portion of that matrix to this matrix

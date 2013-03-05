@@ -9,8 +9,8 @@ import Main.Matrix;
 
 public class ID3 {
 	
-	private TableManager _tableManager;
 	private int _nodeCounter;
+	private TableManager tableManager;
 	
 	public ID3 () {
 		_nodeCounter = 0;
@@ -18,7 +18,7 @@ public class ID3 {
 	
 	public Node buildTree (Matrix examples, Matrix targetAttributes) {
 		LinkedHashSet<Attribute> attributes = createAllAttributes(examples);
-		_tableManager = new TableManager(examples, targetAttributes, attributes);
+		tableManager = new TableManager(examples, targetAttributes, attributes);
 		Node root = runID3(examples, targetAttributes, attributes);
 		return root;
 	}
@@ -48,17 +48,20 @@ public class ID3 {
 	public Node runID3 (Matrix examples, Matrix targetAttributes, LinkedHashSet<Attribute> attributes) {
 		Node root = new Node(_nodeCounter);
 		_nodeCounter++;
-		if (allExamplesPositive(targetAttributes) || attributes.isEmpty()) {
-			Label label = new Label(targetAttributes.attrValue(0, 0), (int)targetAttributes.get(0, 0));
+		if (allExamplesPositive(targetAttributes)) {
+			Label label = new Label(tableManager.get_targetAttributes().attrValue(0, 0), (int)tableManager.get_targetAttributes().get(0, 0));
 			root.setLabel(label);
 		}
+		if (attributes.isEmpty()) {
+			
+		}
 		else {
-			Attribute A = findBestAttribute();
+			Attribute A = findBestAttribute(examples, targetAttributes, attributes);
 			root.setAttribute(A);
-			System.out.println("Attribute= " + A.getName());
+			System.out.println("Attribute= " + A.getName() + "(" + A.getColumnPositionID() + ")");
 			for (double value : A.getValues()) {
-				Matrix[] examples_vi = _tableManager.getTrimmedMatrices(A.getColumnPositionID(), (int)value);
-				if (examples_vi[0].rows() < 1) {
+				Matrix[] examples_vi = tableManager.getTrimmedMatrices(A.getColumnPositionID(), (int)value);
+				if (examples_vi[0].rows() == 0) {
 					Node leafNode = new Node(_nodeCounter);
 					_nodeCounter++;
 					double mcv = targetAttributes.mostCommonValue(0);
@@ -68,9 +71,9 @@ public class ID3 {
 				}
 				else {
 					attributes.remove(A);
-					_tableManager.set_attributes(attributes);
-					_tableManager.set_examples(examples_vi[0]);
-					_tableManager.set_targetAttributes(examples_vi[1]);
+//					tableManager.set_attributes(attributes);
+//					tableManager.set_examples(examples_vi[0]);
+//					tableManager.set_targetAttributes(examples_vi[1]);
 //					examples_vi[0].print();
 					root.addBranch(value, runID3(examples_vi[0], examples_vi[1], attributes));
 				}
@@ -84,35 +87,33 @@ public class ID3 {
 	}
 	
 	// algorithm for finding best attribute is based on Gain (S, A)
-	private Attribute findBestAttribute () {
+	private Attribute findBestAttribute (Matrix examples, Matrix targetAttributes, LinkedHashSet<Attribute> attributes) {
 		double bestGain = -10;
 		int bestAttribute = -10;
-		System.out.println(_tableManager.get_attributes().toString());
-		for (Attribute attribute : _tableManager.get_attributes()) {
+		for (Attribute attribute : attributes) {
 			int attributeColPos = attribute.getColumnPositionID();
-			double gain = calculateGain(attributeColPos);
-			System.out.println("Testing Node" + attributeColPos);
-			if (bestGain <= gain) {
+			double gain = calculateGain(attributeColPos, examples, targetAttributes, attributes);
+			if (gain >= bestGain) {
 				bestGain = gain;
 				bestAttribute = attributeColPos;
 			}
 		}
-		for (Attribute attribute : _tableManager.get_attributes()) {
-//			System.out.println(attribute.get_columnPosition() + "==" + bestAttribute);
-			
+		for (Attribute attribute : attributes) {
 			if (attribute.getColumnPositionID() == bestAttribute)
 				return attribute;
 		}
 		return null;
 	}
 	
-	private double calculateGain (int attribute) {
-		ArrayList<int[]> valueOccurrences = _tableManager.getValueOccurrences(attribute);
-		int[] targetOccurrences = _tableManager.getTargetAttributeOccurrences();
+	private double calculateGain (int attribute, Matrix examples, Matrix targetAttributes, LinkedHashSet<Attribute> attributes) {
+		ArrayList<int[]> valueOccurrences = tableManager.getValueOccurrences(attribute, examples, targetAttributes);
+		int[] targetOccurrences = tableManager.getTargetAttributeOccurrences(targetAttributes);
+//		System.out.println(targetOccurrences[0] + " " + targetOccurrences[1]);
 		double totalOccurrences = 0;
 		for (int i = 0; i < targetOccurrences.length; i++) {
 			totalOccurrences += targetOccurrences[i];
 		}
+		System.out.println(totalOccurrences);
 		double[] valueSummation = new double[valueOccurrences.size()];
 		for (int i = 0; i < valueOccurrences.size(); i++) {
 			for (int j = 0; j < targetOccurrences.length; j++) {
@@ -122,16 +123,25 @@ public class ID3 {
 		double value = 0;
 		for (int i = 0; i < valueOccurrences.size(); i++) {
 			value += (-1) * (valueSummation[i] / totalOccurrences) * calculateEntropy(valueOccurrences.get(i));
+//			System.out.println(value);
 		}
-		double gain = calculateEntropy(targetOccurrences) + value;
+		double gain = calculateEntropy(targetOccurrences);
+//		System.out.println(gain);
+		gain += value;
+		System.out.println("Attribute" + attribute + " 	Gain: " + gain);
 		return gain;
 	}
 	
 	private double calculateEntropy (int[] occurrences) {
 		double totalOccurrences = 0;
+		int counter = 0;
 		for (int i = 0; i < occurrences.length; i ++) {
+			if ((double)occurrences[i] == 0)
+				counter++;
 			totalOccurrences += (double)occurrences[i];
 		}
+		if (counter == occurrences.length - 1)
+			return 0;
 		double entropy = 0;
 		for (int i = 0; i < occurrences.length; i++) {
 			entropy += (-1) * (occurrences[i]/totalOccurrences) * (Math.log10(occurrences[i]/totalOccurrences) / Math.log10(2)); 
