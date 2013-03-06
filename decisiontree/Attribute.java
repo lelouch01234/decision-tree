@@ -20,8 +20,8 @@ public class Attribute {
 		_columnPosition = -2;
 	}
 
-	public void setName(String _name) {
-		this._name = _name;
+	public void setName(String name) {
+		_name = name;
 	}
 
 	public LinkedHashSet<Double> getValues() {
@@ -29,15 +29,15 @@ public class Attribute {
 	}
 
 	public void setValues(LinkedHashSet<Double> values) {
-		this._values = values;
+		_values = values;
 	}
 
 	public int getColumnPositionID() {
 		return _columnPosition;
 	}
 
-	public void setColumnPosition(int _columnPosition) {
-		this._columnPosition = _columnPosition;
+	public void setColumnPosition(int columnPosition) {
+		_columnPosition = columnPosition;
 	}
 
 	public String getName() {
@@ -49,7 +49,7 @@ public class Attribute {
 	}
 	
 	public boolean equals(Attribute other) {
-		if (this.getName().equals(other.getName()))
+		if (this.getColumnPositionID() == other.getColumnPositionID())
 			return true;
 		return false;
 	}

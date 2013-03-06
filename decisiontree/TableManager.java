@@ -42,7 +42,7 @@ public class TableManager {
 	}
 
 	public int[] getTargetAttributeOccurrences(Matrix targetAttributes) {
-		int cwise = _targetAttributes.valueCount(0);
+		int cwise = targetAttributes.valueCount(0);
 		int[] classificationCount = new int[cwise];
 		for (int i = 0; i < cwise; i++) {
 			classificationCount[i] = 0;
@@ -55,8 +55,8 @@ public class TableManager {
 	}
 	
 	public ArrayList<int[]> getValueOccurrences (int attribute, Matrix examples, Matrix targetAttributes) {
-		int cwise = _targetAttributes.valueCount(0);
-		int valuewise = _examples.valueCount(attribute);
+		int cwise = targetAttributes.valueCount(0);
+		int valuewise = examples.valueCount(attribute);
 		ArrayList<int[]> valueOccurrences = new ArrayList<int[]>();
 		for (int i = 0; i < valuewise; i++) {
 			int[] valueOccurrence = new int[cwise];
@@ -70,7 +70,7 @@ public class TableManager {
 		return valueOccurrences;
 	}
 	
-	public Matrix[] getTrimmedMatrices(int attribute, int value) {
+	public Matrix[] getTrimmedMatrices(int attribute, int value, Matrix examples, Matrix targetAttributes) {
 		/*Matrix[] trimmedMatrices = new Matrix[2];
 		Matrix trimmedExamples = new Matrix();
 		Matrix trimmedTargetAttributes = new Matrix();
@@ -95,9 +95,9 @@ public class TableManager {
 		trimmedMatrices[0] = trimmedExamples;
 		trimmedMatrices[1] = trimmedTargetAttributes;
 		return trimmedMatrices;*/
-		Matrix trimmedExamples = new Matrix(_examples, attribute, value, _examples.rows(), _examples.cols(), new ArrayList<Integer>());
+		Matrix trimmedExamples = new Matrix(examples, attribute, value, examples.rows(), examples.cols(), null);
 		ArrayList<Integer> whichToCopy = trimmedExamples.getWhichRowsToCopy();
-		Matrix trimmedTargetAttributes = new Matrix(_targetAttributes, 0, -1, _targetAttributes.rows(), _targetAttributes.cols(), whichToCopy);
+		Matrix trimmedTargetAttributes = new Matrix(targetAttributes, 0, -1, targetAttributes.rows(), targetAttributes.cols(), whichToCopy);
 		Matrix[] trimmedMatrices = new Matrix[2];
 		trimmedMatrices[0] = trimmedExamples;
 		trimmedMatrices[1] = trimmedTargetAttributes;

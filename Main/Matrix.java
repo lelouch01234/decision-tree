@@ -56,12 +56,14 @@ public class Matrix {
 		whichRowsToCopy = new ArrayList<Integer>();
 		m_data = new ArrayList< double[] >();
 		if (value == -1) {
-			for (int i = 0; i < whichToCopy.size(); i++) {
-				double[] rowSrc = that.row(i);
-				double[] rowDest = new double[c];
-				for(int j = 0; j < c; j++)
-					rowDest[j] = rowSrc[j];
-				m_data.add(rowDest);
+			for (int i = 0; i < that.rows(); i++) {
+				if (whichToCopy.contains(i)) {
+					double[] rowSrc = that.row(i);
+					double[] rowDest = new double[c];
+					for(int j = 0; j < c; j++)
+						rowDest[j] = rowSrc[j];
+					m_data.add(rowDest);
+				}
 			}
 		}
 		else {

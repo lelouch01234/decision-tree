@@ -1,24 +1,18 @@
 digraph DecisionTree {
 graph [ordering="out"];
   0 [label=""];
-  0 -> 1 [label=" -1.0"];
+  0 -> 1 [label=" 0.0"];
   1 [label=""];
-  1 -> 2 [label=" -1.0"];
-  2 [label=""];
-  2 -> 3 [label=" -1.0"];
-  3 [label=""];
-  3 -> 4 [label=" "];
-  4 [label="Not a leaf node"];
-  3 -> 5 [label=" "];
-  5 [label="Not a leaf node"];
-  2 -> 6 [label=" "];
-  6 [label="Not a leaf node"];
-  1 -> 7 [label=" "];
-  7 [label="Not a leaf node"];
-  1 -> 8 [label=" "];
-  8 [label="Not a leaf node"];
-  0 -> 9 [label=" "];
-  9 [label="Not a leaf node"];
-  0 -> 10 [label=" "];
-  10 [label="Not a leaf node"];
+  1 -> 2 [label=" "];
+  2 [label="no"];
+  1 -> 3 [label=" "];
+  3 [label="yes"];
+  0 -> 4 [label=" "];
+  4 [label="yes"];
+  0 -> 5 [label=" "];
+  5 [label=""];
+  5 -> 6 [label=" "];
+  6 [label="yes"];
+  5 -> 7 [label=" "];
+  7 [label="no"];
 }
