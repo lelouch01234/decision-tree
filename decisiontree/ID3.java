@@ -59,13 +59,15 @@ public class ID3 {
 			root.setLabel(label);
 		}
 		else {
+//			examples.print();
+//			targetAttributes.print();
 			Attribute A = findBestAttribute(examples, targetAttributes, attributes);
 			root.setAttribute(A);
-			System.out.println("Attribute = " + A.getName() + "(" + A.getColumnPositionID() + ")");
-			System.out.println("-----------------------------------------------");
+//			System.out.println("Attribute = " + A.getName() + "(" + A.getColumnPositionID() + ")");
+//			System.out.println("-----------------------------------------------");
 			for (double value : A.getValues()) {
 				Matrix[] examples_vi = tableManager.getTrimmedMatrices(A.getColumnPositionID(), (int)value, examples, targetAttributes);
-				System.out.println("Value being tested: " + value);
+//				System.out.println("Value being tested: " + value);
 //				examples_vi[0].print();
 //				examples_vi[1].print();
 				if (examples_vi[0].rows() == 0) {
@@ -78,7 +80,7 @@ public class ID3 {
 				}
 				else {
 					if (attributes.remove(A))
-						System.out.println("xxxxxRemoved: " + A.getName());
+//						System.out.println("xxxxxRemoved: " + A.getName());
 					root.addBranch(value, runID3(examples_vi[0], examples_vi[1], attributes));
 					attributes.add(A);
 				}
@@ -132,7 +134,7 @@ public class ID3 {
 		}
 		double gain = calculateEntropy(targetOccurrences);
 		gain += value;
-		System.out.println("Attribute" + attribute + " 	Gain: " + gain);
+//		System.out.println("Attribute" + attribute + " 	Gain: " + gain);
 		return gain;
 	}
 	
@@ -146,14 +148,15 @@ public class ID3 {
 //			System.out.print("R: " + occurrences[i] + " ");
 		}
 //		System.out.println("Out of: " + totalOccurrences);
-		System.out.println("		Total Occurrences: " + totalOccurrences);
+//		System.out.println("		Total Occurrences: " + totalOccurrences);
 		if (counter == occurrences.length - 1)
 			return 0;
 		if (totalOccurrences == 0)
 			return 0;
 		double entropy = 0;
 		for (int i = 0; i < occurrences.length; i++) {
-			entropy += (-1) * (occurrences[i]/totalOccurrences) * (Math.log10(occurrences[i]/totalOccurrences) / Math.log10(2)); 
+			if (occurrences[i] != 0)
+				entropy += (-1) * (occurrences[i]/totalOccurrences) * (Math.log10(occurrences[i]/totalOccurrences) / Math.log10(2)); 
 		}
 //		System.out.println(" entropy: " + entropy);
 		return entropy;
