@@ -46,8 +46,8 @@ public class ID3 {
 	}
 	
 	public Node runID3 (Matrix examples, Matrix targetAttributes, LinkedHashSet<Attribute> attributes) {
-		examples.print();
-		targetAttributes.print();
+//		examples.print();
+//		targetAttributes.print();
 		Node root = new Node(_nodeCounter);
 		_nodeCounter++;
 		if (allExamplesPositive(targetAttributes) || attributes.isEmpty()) {
@@ -77,8 +77,10 @@ public class ID3 {
 					root.addBranch(value, leafNode);
 				}
 				else {
-					attributes.remove(A);
+					if (attributes.remove(A))
+						System.out.println("xxxxxRemoved: " + A.getName());
 					root.addBranch(value, runID3(examples_vi[0], examples_vi[1], attributes));
+					attributes.add(A);
 				}
 			}
 		}
@@ -144,7 +146,10 @@ public class ID3 {
 //			System.out.print("R: " + occurrences[i] + " ");
 		}
 //		System.out.println("Out of: " + totalOccurrences);
+		System.out.println("		Total Occurrences: " + totalOccurrences);
 		if (counter == occurrences.length - 1)
+			return 0;
+		if (totalOccurrences == 0)
 			return 0;
 		double entropy = 0;
 		for (int i = 0; i < occurrences.length; i++) {
