@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.LinkedHashMap;
 
+import Main.Matrix;
+
 public class Node {
 	
 	private Label _label;
@@ -48,16 +50,16 @@ public class Node {
 		return _attribute;
 	}
 	
-	public void dumpDot() throws IOException {
+	public void dumpDot(Matrix examples, Matrix targetAttributes) throws IOException {
 		PrintWriter out = new PrintWriter(new File("output/tree.dot"));
 		out.println("digraph DecisionTree {");
 		out.println("graph [ordering=\"out\"];");
-		dumpDot(out);
+		dumpDot(out, examples, targetAttributes);
 		out.println("}");
 		out.close();
 	}
 	
-	private void dumpDot(PrintWriter out) {
+	private void dumpDot(PrintWriter out, Matrix examples, Matrix targetAttributes) {
 		String myLabel = "";
 		if (_branches.isEmpty()) {
 			myLabel = _label.getStrValue();
@@ -68,13 +70,15 @@ public class Node {
 			for (double key : _branches.keySet()) {
 				Node childNode = _branches.get(key);
 				String edgeLabel = "";
-				if (childNode.getBranches().get(key) != null)
-					edgeLabel = childNode.getBranches().get(key).getLabel().getValue() + "";
+				if (childNode.getBranches().get(key) != null) {
+					edgeLabel = examples.attrValue(childNode.getAttribute().getColumnPositionID(), (int)key);
+				}
+//				else if ()
 
 				int childNodeID = childNode.getNodeID();
 				out.print("  " + _nodeID + " -> " + childNodeID);
-				out.print(" [label=\" " +edgeLabel + "\"];\n");
-				childNode.dumpDot(out);
+				out.print(" [label=\" " + edgeLabel + "\"];\n");
+				childNode.dumpDot(out, examples, targetAttributes);
 			}
 		}
 	}

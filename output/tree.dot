@@ -1,7 +1,7 @@
 digraph DecisionTree {
 graph [ordering="out"];
   0 [label=""];
-  0 -> 1 [label=" 0.0"];
+  0 -> 1 [label=" high"];
   1 [label=""];
   1 -> 2 [label=" "];
   2 [label="no"];

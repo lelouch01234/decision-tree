@@ -15,7 +15,7 @@ public class DecisionTree extends SupervisedLearner {
 		_labels = labels;
 		ID3 id3 = new ID3();
 		Node _root = id3.buildTree(features, labels);
-		_root.dumpDot();
+		_root.dumpDot(features, labels);
 	}
 
 	@Override
