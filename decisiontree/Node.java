@@ -70,11 +70,10 @@ public class Node {
 			for (double key : _branches.keySet()) {
 				Node childNode = _branches.get(key);
 				String edgeLabel = "";
-				if (childNode.getBranches().get(key) != null) {
-					edgeLabel = examples.attrValue(childNode.getAttribute().getColumnPositionID(), (int)key);
-				}
-//				else if ()
-
+//				if (childNode.getBranches().get(key) != null) {
+//					edgeLabel = examples.attrValue(childNode.getAttribute().getColumnPositionID(), (int)key);
+//				}
+				edgeLabel = examples.attrValue(_attribute.getColumnPositionID(), (int)key);
 				int childNodeID = childNode.getNodeID();
 				out.print("  " + _nodeID + " -> " + childNodeID);
 				out.print(" [label=\" " + edgeLabel + "\"];\n");

@@ -46,12 +46,9 @@ public class ID3 {
 	}
 	
 	public Node runID3 (Matrix examples, Matrix targetAttributes, LinkedHashSet<Attribute> attributes) {
-//		examples.print();
-//		targetAttributes.print();
 		Node root = new Node(_nodeCounter);
 		_nodeCounter++;
 		if (allExamplesPositive(targetAttributes) || attributes.isEmpty()) {
-//			System.out.println("attrvalue(0,0): " + targetAttributes.attrValue(0, 0));
 			double l = targetAttributes.get(0, 0);
 			String strl = targetAttributes.attrValue(0, (int)l);
 			Label label = new Label(strl, l);
@@ -59,28 +56,21 @@ public class ID3 {
 			root.setLabel(label);
 		}
 		else {
-//			examples.print();
-//			targetAttributes.print();
 			Attribute A = findBestAttribute(examples, targetAttributes, attributes);
 			root.setAttribute(A);
-//			System.out.println("Attribute = " + A.getName() + "(" + A.getColumnPositionID() + ")");
-//			System.out.println("-----------------------------------------------");
 			for (double value : A.getValues()) {
 				Matrix[] examples_vi = tableManager.getTrimmedMatrices(A.getColumnPositionID(), (int)value, examples, targetAttributes);
-//				System.out.println("Value being tested: " + value);
-//				examples_vi[0].print();
-//				examples_vi[1].print();
 				if (examples_vi[0].rows() == 0) {
 					Node leafNode = new Node(_nodeCounter);
 					_nodeCounter++;
 					double mcv = targetAttributes.mostCommonValue(0);
 					Label label = new Label(targetAttributes.attrValue(0, (int)mcv), (int)mcv);
+//					System.out.println("LABEL SET: " + label.getStrValue());
 					leafNode.setLabel(label);
 					root.addBranch(value, leafNode);
 				}
 				else {
-					if (attributes.remove(A))
-//						System.out.println("xxxxxRemoved: " + A.getName());
+					attributes.remove(A);
 					root.addBranch(value, runID3(examples_vi[0], examples_vi[1], attributes));
 					attributes.add(A);
 				}
