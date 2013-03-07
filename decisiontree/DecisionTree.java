@@ -20,15 +20,6 @@ public class DecisionTree extends SupervisedLearner {
 //		for (int i = 0; i < features.length; i++) {
 //			System.out.println("	Feature" + i + ": " + features[i]);
 //		}
-		labels[0] = makeDecision(features);
+		labels[0] = _root.makeDecision(features, _root.getAttribute().getColumnPositionID());
 	}
-	
-	private double makeDecision(double[] features) {
-		Attribute A = _root.getAttribute();
-		double ACol = A.getColumnPositionID();
-		
-		return 0;
-	}
-	
-	
 }

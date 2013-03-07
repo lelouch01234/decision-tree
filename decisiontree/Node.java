@@ -64,15 +64,15 @@ public class Node {
 		if (_branches.isEmpty()) {
 			myLabel = _label.getStrValue();
 		}
+		else {
+			myLabel = _attribute.getName();
+		}
 		out.println("  " + _nodeID + " [label=\"" + myLabel + "\"];");//" + toString() + "\"];\n");
 		
 		if (!_branches.isEmpty()) {
 			for (double key : _branches.keySet()) {
 				Node childNode = _branches.get(key);
 				String edgeLabel = "";
-//				if (childNode.getBranches().get(key) != null) {
-//					edgeLabel = examples.attrValue(childNode.getAttribute().getColumnPositionID(), (int)key);
-//				}
 				edgeLabel = examples.attrValue(_attribute.getColumnPositionID(), (int)key);
 				int childNodeID = childNode.getNodeID();
 				out.print("  " + _nodeID + " -> " + childNodeID);
@@ -80,5 +80,21 @@ public class Node {
 				childNode.dumpDot(out, examples, targetAttributes);
 			}
 		}
+	}
+	
+	public double makeDecision (double[] features, int attribute) {
+		double decision = 0;
+		if (_branches.isEmpty())
+			return _label.getValue();
+		else {
+			for (double branchValue : _branches.keySet()) {
+				double value = features[attribute];
+				if (branchValue == value) {
+					Node childNode = _branches.get(branchValue);
+					decision = childNode.makeDecision(features, childNode.getAttribute().getColumnPositionID());
+				}
+			}
+		}
+		return decision;
 	}
 }

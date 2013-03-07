@@ -1,8 +1,8 @@
 digraph DecisionTree {
 graph [ordering="out"];
-  0 [label=""];
+  0 [label="outlook"];
   0 -> 1 [label=" sunny"];
-  1 [label=""];
+  1 [label="humidity"];
   1 -> 2 [label=" high"];
   2 [label="no"];
   1 -> 3 [label=" normal"];
@@ -10,7 +10,7 @@ graph [ordering="out"];
   0 -> 4 [label=" overcast"];
   4 [label="yes"];
   0 -> 5 [label=" rain"];
-  5 [label=""];
+  5 [label="wind"];
   5 -> 6 [label=" weak"];
   6 [label="yes"];
   5 -> 7 [label=" strong"];
