@@ -16,6 +16,10 @@ public class ID3 {
 		_nodeCounter = 0;
 	}
 	
+	public double getNodeCounter() {
+		return _nodeCounter;
+	}
+	
 	public Node buildTree (Matrix examples, Matrix targetAttributes) {
 		LinkedHashSet<Attribute> attributes = createAllAttributes(examples);
 		tableManager = new TableManager(examples, targetAttributes, attributes);
@@ -38,7 +42,8 @@ public class ID3 {
 		LinkedHashSet<Double> values = new LinkedHashSet<Double>();
 		int numberofValues = attributes.valueCount(attribute);
 		for (int i = 0; i < attributes.rows(); i++) {
-			values.add(attributes.get(i, attribute));
+			if (attributes.get(i, attribute) != Double.MAX_VALUE)
+				values.add(attributes.get(i, attribute));
 			if (values.size() == numberofValues)
 				break;
 		}
@@ -52,7 +57,7 @@ public class ID3 {
 			double l = targetAttributes.get(0, 0);
 			String strl = targetAttributes.attrValue(0, (int)l);
 			Label label = new Label(strl, l);
-			System.out.println("LABEL SET: " + label.getStrValue());
+//			System.out.println("LABEL SET: " + label.getStrValue());
 			root.setLabel(label);
 		}
 		else {
@@ -90,6 +95,10 @@ public class ID3 {
 		for (Attribute attribute : attributes) {
 			int attributeColPos = attribute.getColumnPositionID();
 			double gain = calculateGain(attributeColPos, examples, targetAttributes, attributes);
+			double splitInformation = splitInformation(attributeColPos, examples, targetAttributes, attributes);
+			if (splitInformation > 0) {
+				gain = gain / splitInformation;
+			}
 			if (gain >= bestGain) {
 				bestGain = gain;
 				bestAttribute = attributeColPos;
@@ -102,15 +111,53 @@ public class ID3 {
 		return null;
 	}
 	
+	private double splitInformation(int attribute, Matrix examples, Matrix targetAttributes, LinkedHashSet<Attribute> attributes) {
+		ArrayList<int[]> valueOccurrences = tableManager.getValueOccurrences(attribute, examples, targetAttributes);
+		int[] targetOccurrences = tableManager.getTargetAttributeOccurrences(targetAttributes);
+		double targetTotalOccurrences = 0;
+		for (int i = 0; i < targetOccurrences.length; i++) {
+			targetTotalOccurrences += targetOccurrences[i];
+		}
+		double[] valueSummation = new double[valueOccurrences.size()];
+		for (int i = 0; i < valueOccurrences.size(); i++) {
+			for (int j = 0; j < targetOccurrences.length; j++) {
+				valueSummation[i] += valueOccurrences.get(i)[j];
+			}
+		}
+		double value = 0;
+		for (int i = 0; i < valueOccurrences.size(); i++) {
+			value += (-1) * calculateEntropyForSplit(valueOccurrences.get(i), targetTotalOccurrences);
+		}
+		return value;
+	}
+	
+	private double calculateEntropyForSplit (int[] occurrences, double targetTotalOccurrences) {
+		double totalOccurrences = 0;
+		int counter = 0;
+		for (int i = 0; i < occurrences.length; i ++) {
+			if ((double)occurrences[i] == 0)
+				counter++;
+			totalOccurrences += (double)occurrences[i];
+		}
+		if (counter == occurrences.length - 1)
+			return 0;
+		if (totalOccurrences == 0)
+			return 0;
+		double entropy = 0;
+		for (int i = 0; i < occurrences.length; i++) {
+			if (occurrences[i] != 0)
+				entropy += (-1) * (totalOccurrences/targetTotalOccurrences) * (Math.log10(totalOccurrences/targetTotalOccurrences) / Math.log10(2)); 
+		}
+		return entropy;
+	}
+	
 	private double calculateGain (int attribute, Matrix examples, Matrix targetAttributes, LinkedHashSet<Attribute> attributes) {
 		ArrayList<int[]> valueOccurrences = tableManager.getValueOccurrences(attribute, examples, targetAttributes);
 		int[] targetOccurrences = tableManager.getTargetAttributeOccurrences(targetAttributes);
-//		System.out.println(targetOccurrences[0] + " " + targetOccurrences[1]);
 		double totalOccurrences = 0;
 		for (int i = 0; i < targetOccurrences.length; i++) {
 			totalOccurrences += targetOccurrences[i];
 		}
-//		System.out.println(totalOccurrences);
 		double[] valueSummation = new double[valueOccurrences.size()];
 		for (int i = 0; i < valueOccurrences.size(); i++) {
 			for (int j = 0; j < targetOccurrences.length; j++) {
@@ -120,11 +167,9 @@ public class ID3 {
 		double value = 0;
 		for (int i = 0; i < valueOccurrences.size(); i++) {
 			value += (-1) * (valueSummation[i] / totalOccurrences) * calculateEntropy(valueOccurrences.get(i));
-//			System.out.println("entropy: " + calculateEntropy(valueOccurrences.get(i)));
 		}
 		double gain = calculateEntropy(targetOccurrences);
 		gain += value;
-//		System.out.println("Attribute" + attribute + " 	Gain: " + gain);
 		return gain;
 	}
 	
@@ -135,10 +180,7 @@ public class ID3 {
 			if ((double)occurrences[i] == 0)
 				counter++;
 			totalOccurrences += (double)occurrences[i];
-//			System.out.print("R: " + occurrences[i] + " ");
 		}
-//		System.out.println("Out of: " + totalOccurrences);
-//		System.out.println("		Total Occurrences: " + totalOccurrences);
 		if (counter == occurrences.length - 1)
 			return 0;
 		if (totalOccurrences == 0)
@@ -148,7 +190,6 @@ public class ID3 {
 			if (occurrences[i] != 0)
 				entropy += (-1) * (occurrences[i]/totalOccurrences) * (Math.log10(occurrences[i]/totalOccurrences) / Math.log10(2)); 
 		}
-//		System.out.println(" entropy: " + entropy);
 		return entropy;
 	}
 }

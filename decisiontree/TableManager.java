@@ -62,7 +62,11 @@ public class TableManager {
 			int[] valueOccurrence = new int[cwise];
 			for (int j = 0; j < examples.rows(); j++) {
 				int targetValue = (int)targetAttributes.get(j, 0);
-				if ( i == (int)(examples.get(j, attribute)) )
+				if (examples.get(j, attribute) == Double.MAX_VALUE) { // missing value
+//					System.out.println(examples.get(j, attribute));
+					examples.set(j, attribute, examples.mostCommonValueMissingData(attribute, targetAttributes.get(j, 0)));					
+				}
+				else if ( i == (int)(examples.get(j, attribute)) )
 					valueOccurrence[targetValue]++;
 			}
 			valueOccurrences.add(valueOccurrence);
@@ -71,30 +75,6 @@ public class TableManager {
 	}
 	
 	public Matrix[] getTrimmedMatrices(int attribute, int value, Matrix examples, Matrix targetAttributes) {
-		/*Matrix[] trimmedMatrices = new Matrix[2];
-		Matrix trimmedExamples = new Matrix();
-		Matrix trimmedTargetAttributes = new Matrix();
-		ArrayList<double[]> exampleRowsToCopy = new ArrayList<double[]>();
-		ArrayList<double[]> targetRowsToCopy = new ArrayList<double[]>();
-		for (int i = 0; i < _examples.rows(); i++) {
-			if (_examples.get(i, attribute) == value) {
-				exampleRowsToCopy.add(_examples.row(i));
-				targetRowsToCopy.add(_targetAttributes.row(i));
-			}
-		}
-		trimmedExamples.setSize(exampleRowsToCopy.size(), _examples.cols());
-		trimmedTargetAttributes.setSize(targetRowsToCopy.size(), 1);
-		for (int i = 0; i < exampleRowsToCopy.size(); i++) {
-			for (int j = 0; j < exampleRowsToCopy.get(i).length; j++) {
-				trimmedExamples.set(i, j, exampleRowsToCopy.get(i)[j]);
-			}
-		}
-		for (int i = 0; i < targetRowsToCopy.size(); i++) {
-			trimmedTargetAttributes.set(i, 0, targetRowsToCopy.get(i)[0]);
-		}
-		trimmedMatrices[0] = trimmedExamples;
-		trimmedMatrices[1] = trimmedTargetAttributes;
-		return trimmedMatrices;*/
 		Matrix trimmedExamples = new Matrix(examples, attribute, value, examples.rows(), examples.cols(), null);
 		ArrayList<Integer> whichToCopy = trimmedExamples.getWhichRowsToCopy();
 		Matrix trimmedTargetAttributes = new Matrix(targetAttributes, 0, -1, targetAttributes.rows(), targetAttributes.cols(), whichToCopy);

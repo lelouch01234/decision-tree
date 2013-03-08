@@ -342,6 +342,36 @@ public class Matrix {
 		}
 		return val;
 	}
+	
+	public double mostCommonValueMissingData(int col, double classification) {
+		TreeMap<Double, Integer> tm = new TreeMap<Double, Integer>();
+		for(int i = 0; i < rows(); i++) {
+			double v = get(i, col);
+			if(v != MISSING)
+			{
+				if (v == classification) {
+					Integer count = tm.get(v);
+					if(count == null)
+						tm.put(v, new Integer(1));
+					else
+						tm.put(v, new Integer(count.intValue() + 1));
+				}
+			}
+		}
+		int maxCount = 0;
+		double val = MISSING;
+		Iterator< Entry<Double, Integer> > it = tm.entrySet().iterator();
+		while(it.hasNext())
+		{
+			Entry<Double, Integer> e = it.next();
+			if(e.getValue() > maxCount)
+			{
+				maxCount = e.getValue();
+				val = e.getKey();
+			}
+		}
+		return val;
+	}
 
 	public void normalize() {
 		for(int i = 0; i < cols(); i++) {

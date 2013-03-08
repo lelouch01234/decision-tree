@@ -38,7 +38,6 @@ public class Node {
 	}
 	
 	public void addBranch(double value, Node node) {
-		System.out.println("");
 		_branches.put(value, node);
 	}
 	
@@ -50,8 +49,8 @@ public class Node {
 		return _attribute;
 	}
 	
-	public void dumpDot(Matrix examples, Matrix targetAttributes) throws IOException {
-		PrintWriter out = new PrintWriter(new File("output/tree.dot"));
+	public void dumpDot(Matrix examples, Matrix targetAttributes, String fileName) throws IOException {
+		PrintWriter out = new PrintWriter(new File(fileName));
 		out.println("digraph DecisionTree {");
 		out.println("graph [ordering=\"out\"];");
 		dumpDot(out, examples, targetAttributes);
@@ -77,6 +76,7 @@ public class Node {
 				int childNodeID = childNode.getNodeID();
 				out.print("  " + _nodeID + " -> " + childNodeID);
 				out.print(" [label=\" " + edgeLabel + "\"];\n");
+//				System.out.println(edgeLabel);
 				childNode.dumpDot(out, examples, targetAttributes);
 			}
 		}

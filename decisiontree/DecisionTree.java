@@ -11,7 +11,9 @@ public class DecisionTree extends SupervisedLearner {
 	public void train(Matrix features, Matrix labels) throws Exception {
 		ID3 id3 = new ID3();
 		_root = id3.buildTree(features, labels);
-		_root.dumpDot(features, labels);
+		String fileName = "output/vowelWithGainRatio.dot";
+		_root.dumpDot(features, labels, fileName);
+//		System.out.println(id3.getNodeCounter());
 	}
 
 	@Override
