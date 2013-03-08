@@ -95,10 +95,10 @@ public class ID3 {
 		for (Attribute attribute : attributes) {
 			int attributeColPos = attribute.getColumnPositionID();
 			double gain = calculateGain(attributeColPos, examples, targetAttributes, attributes);
-			double splitInformation = splitInformation(attributeColPos, examples, targetAttributes, attributes);
+			/*double splitInformation = splitInformation(attributeColPos, examples, targetAttributes, attributes);
 			if (splitInformation > 0) {
 				gain = gain / splitInformation;
-			}
+			}*/
 			if (gain >= bestGain) {
 				bestGain = gain;
 				bestAttribute = attributeColPos;

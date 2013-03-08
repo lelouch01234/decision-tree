@@ -169,14 +169,14 @@ public class MLSystemManager {
 					double trainAccuracy = learner.measureAccuracy(trainFeatures, trainLabels, null);
 					sumAccuracy += accuracy;
 					trainSumAccuracy += trainAccuracy;
-					System.out.println("Train -  Rep=" + j + ", Fold=" + i + ", Accuracy=" + trainAccuracy);
+//					System.out.println("Train -  Rep=" + j + ", Fold=" + i + ", Accuracy=" + trainAccuracy);
 					System.out.println("Test - Rep=" + j + ", Fold=" + i + ", Accuracy=" + accuracy);
-					System.out.println("===================================================");
+//					System.out.println("===================================================");
 				}
 			}
 			elapsedTime /= (reps * folds);
 			System.out.println("Average time to train (in seconds): " + elapsedTime / 1000.0);
-			System.out.println("Train Mean accuracy=" + (trainSumAccuracy / (reps * folds)));
+//			System.out.println("Train Mean accuracy=" + (trainSumAccuracy / (reps * folds)));
 			System.out.println("Test Mean accuracy=" + (sumAccuracy / (reps * folds)));
 		}
 	}

@@ -21,6 +21,10 @@ public class Node {
 		_nodeID = nodeCounter;
 	}
 	
+	public Node (Node that) {
+		this(-1);
+	}
+	
 	public int getNodeID() {
 		return _nodeID;
 	}
